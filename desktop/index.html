@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Образ дня — десктоп</title>
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="../icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-1: #f3ebe4;
+      --bg-2: #e8f0f2;
+      --bg-3: #f0e8ef;
+      --ink: #4a4458;
+      --ink-soft: #7a7388;
+      --btn: #c4a8b8;
+      --btn-hover: #b897ab;
+      --btn-text: #fffaf8;
+      --wheel-edge: #ffffffaa;
+      --result-bg: #ffffff66;
+      --shadow: 0 18px 40px rgba(90, 70, 90, 0.12);
+      --pastel-a: #f7d6d0;
+      --pastel-b: #d8e8e2;
+      --pastel-c: #e4d6f0;
+      --pastel-d: #f5e6c8;
+      --pastel-e: #cdd9f0;
+      --pastel-f: #e8d4d8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Nunito", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 60% at 15% 20%, #f8dfe8 0%, transparent 55%),
+        radial-gradient(ellipse 70% 50% at 85% 15%, #d9ebe8 0%, transparent 50%),
+        radial-gradient(ellipse 60% 55% at 70% 85%, #e6dff0 0%, transparent 50%),
+        linear-gradient(165deg, var(--bg-1), var(--bg-2) 45%, var(--bg-3));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1.25rem 3rem;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 600;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      animation: fadeDown 0.8s ease forwards;
+    }
+
+    .spin-btn {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      font-family: "Nunito", sans-serif;
+      font-weight: 700;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      letter-spacing: 0.03em;
+      color: var(--btn-text);
+      background: linear-gradient(145deg, #d4b4c4, var(--btn) 40%, #b8c9c4);
+      padding: 0.95rem 2.1rem;
+      border-radius: 999px;
+      box-shadow:
+        0 10px 28px rgba(140, 110, 130, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+      margin-bottom: 2.75rem;
+      opacity: 0;
+      animation: fadeDown 0.8s ease 0.12s forwards;
+    }
+
+    .spin-btn:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.02);
+      filter: brightness(1.03);
+      box-shadow: 0 14px 32px rgba(140, 110, 130, 0.34);
+    }
+
+    .spin-btn:active:not(:disabled) {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    .spin-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.72;
+      filter: grayscale(0.15);
+    }
+
+    .stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(0.5rem, 2vw, 1.5rem);
+      width: 100%;
+      max-width: 920px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.2s forwards;
+    }
+
+    .wheel-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      flex: 1 1 280px;
+      max-width: 360px;
+    }
+
+    .wheel-wrap {
+      position: relative;
+      width: min(46vw, 330px);
+      aspect-ratio: 1;
+      filter: drop-shadow(0 16px 28px rgba(100, 80, 100, 0.14));
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      border: 6px solid rgba(255, 255, 255, 0.75);
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.35);
+      transition: transform 0s;
+      will-change: transform;
+    }
+
+    .wheel.spinning {
+      transition-timing-function: cubic-bezier(0.08, 0.7, 0.1, 1);
+    }
+
+    .hub {
+      position: absolute;
+      inset: 50%;
+      width: 18%;
+      height: 18%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: linear-gradient(145deg, #fff8f5, #e8dce6);
+      border: 3px solid rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+      z-index: 2;
+    }
+
+    .label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 38%;
+      transform-origin: center center;
+      text-align: center;
+      font-size: clamp(0.55rem, 1.4vw, 0.72rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--ink);
+      pointer-events: none;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      hyphens: auto;
+    }
+
+    .caption {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: lowercase;
+      color: var(--ink-soft);
+    }
+
+    .arrow {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(48px, 8vw, 72px);
+      height: clamp(48px, 8vw, 72px);
+      margin-top: -2.2rem;
+      color: #9a8798;
+      filter: drop-shadow(0 4px 10px rgba(120, 90, 120, 0.18));
+      transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1), color 0.45s ease;
+    }
+
+    .arrow.pulse {
+      animation: arrowPulse 0.7s ease;
+      color: #7d6478;
+    }
+
+    .arrow svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .result {
+      margin-top: 2.4rem;
+      min-height: 4.5rem;
+      width: min(100%, 520px);
+      text-align: center;
+      padding: 1.1rem 1.4rem;
+      border-radius: 1.25rem;
+      background: var(--result-bg);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .result.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .result-title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.35rem;
+      margin-bottom: 0.45rem;
+      color: var(--ink-soft);
+    }
+
+    .result-line {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+
+    .result-line span {
+      color: #6d5a72;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes arrowPulse {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+
+    @media (max-width: 640px) {
+      .stage {
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .arrow {
+        margin: 0.4rem 0 0.8rem;
+        transform: rotate(90deg);
+        width: 52px;
+        height: 52px;
+      }
+
+      .arrow.pulse {
+        animation: arrowPulseMobile 0.7s ease;
+      }
+
+      .wheel-wrap {
+        width: min(79vw, 308px);
+      }
+
+      .caption {
+        margin-bottom: 0.4rem;
+      }
+
+      /* On mobile, stack top then bottom; swap visual order via flex order */
+      .wheel-block.top { order: 1; }
+      .arrow { order: 2; }
+      .wheel-block.bottom { order: 3; }
+    }
+
+    @keyframes arrowPulseMobile {
+      0% { transform: rotate(90deg) scale(1); }
+      40% { transform: rotate(90deg) scale(1.18); }
+      100% { transform: rotate(90deg) scale(1); }
+    }
+
+    .admin-btn {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 30;
+      width: 2.35rem;
+      height: 2.35rem;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      color: #8a7a8c;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 6px 18px rgba(90, 70, 90, 0.12);
+      display: grid;
+      place-items: center;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .admin-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.78);
+      color: #6d5a72;
+    }
+
+    .admin-btn svg {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 1.25rem;
+      background: rgba(74, 68, 88, 0.28);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      width: min(100%, 420px);
+      max-height: min(90vh, 640px);
+      overflow: auto;
+      background: linear-gradient(165deg, #faf6f3, #f3eef5);
+      border-radius: 1.35rem;
+      box-shadow: 0 24px 48px rgba(70, 55, 80, 0.22);
+      padding: 1.35rem 1.35rem 1.2rem;
+      transform: translateY(12px) scale(0.98);
+      transition: transform 0.28s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    .modal.open .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-header h2 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .modal-close {
+      border: none;
+      background: transparent;
+      color: var(--ink-soft);
+      font-size: 1.4rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.4rem;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--ink);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .field label {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--ink-soft);
+    }
+
+    .field textarea {
+      width: 100%;
+      min-height: 8.5rem;
+      resize: vertical;
+      border: 1.5px solid rgba(160, 140, 160, 0.28);
+      border-radius: 0.9rem;
+      padding: 0.75rem 0.85rem;
+      font-family: "Nunito", sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.72);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .field textarea:focus {
+      border-color: rgba(180, 150, 170, 0.7);
+      box-shadow: 0 0 0 3px rgba(196, 168, 184, 0.25);
+    }
+
+    .field-hint {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      opacity: 0.85;
+    }
+
+    .admin-error {
+      min-height: 1.2rem;
+      margin-bottom: 0.65rem;
+      font-size: 0.85rem;
+      color: #b06070;
+    }
+
+    .save-btn {
+      appearance: none;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      font-family: "Nunito", sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--btn-text);
+      background: linear-gradient(145deg, #d4b4c4, var(--btn) 40%, #b8c9c4);
+      padding: 0.85rem 1.2rem;
+      border-radius: 999px;
+      box-shadow: 0 8px 20px rgba(140, 110, 130, 0.22);
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+    }
+  </style>
+</head>
+<body>
+  <button class="admin-btn" id="adminBtn" type="button" aria-label="Гардероб" title="Гардероб">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M19.4 13a7.7 7.7 0 0 0 .05-2l1.7-1.3-1.6-2.8-2 .7a7.6 7.6 0 0 0-1.7-1l-.3-2.1H10.4l-.3 2.1a7.6 7.6 0 0 0-1.7 1l-2-.7-1.6 2.8L6.5 11a7.7 7.7 0 0 0 0 2l-1.7 1.3 1.6 2.8 2-.7a7.6 7.6 0 0 0 1.7 1l.3 2.1h3.2l.3-2.1a7.6 7.6 0 0 0 1.7-1l2 .7 1.6-2.8L19.4 13Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <h1>Образ дня</h1>
+  <button class="spin-btn" id="spinBtn" type="button">Що мені вдягнути?</button>
+
+  <div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="adminTitle">Гардероб</h2>
+        <button class="modal-close" id="adminClose" type="button" aria-label="Закрити">×</button>
+      </div>
+      <form id="adminForm">
+        <div class="field">
+          <label for="topItemsInput">верх</label>
+          <textarea id="topItemsInput" spellcheck="false"></textarea>
+          <p class="field-hint">Кожна річ — окремий рядок</p>
+        </div>
+        <div class="field">
+          <label for="bottomItemsInput">низ</label>
+          <textarea id="bottomItemsInput" spellcheck="false"></textarea>
+          <p class="field-hint">Кожна річ — окремий рядок</p>
+        </div>
+        <p class="admin-error" id="adminError" aria-live="polite"></p>
+        <button class="save-btn" type="submit">Зберегти</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="wheel-block top">
+      <div class="wheel-wrap">
+        <div class="wheel" id="wheelTop" aria-label="Колесо верху"></div>
+        <div class="hub" aria-hidden="true"></div>
+      </div>
+      <div class="caption">верх</div>
+    </div>
+
+    <div class="arrow" id="arrow" aria-hidden="true">
+      <svg viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 20 H72" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M18 10 L6 20 L18 30" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M62 10 L74 20 L62 30" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="40" cy="20" r="4.5" fill="currentColor" opacity="0.55"/>
+      </svg>
+    </div>
+
+    <div class="wheel-block bottom">
+      <div class="wheel-wrap">
+        <div class="wheel" id="wheelBottom" aria-label="Колесо низу"></div>
+        <div class="hub" aria-hidden="true"></div>
+      </div>
+      <div class="caption">низ</div>
+    </div>
+  </div>
+
+  <div class="result" id="result" aria-live="polite">
+    <div class="result-title">Сьогоднішній образ</div>
+    <div class="result-line" id="resultText"></div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "wardrobe-wheels-v1";
+
+    const DEFAULT_TOP = [
+      "біла блузка",
+      "синя футболка",
+      "блакитна блуза",
+      "біла блузка з квітами",
+    ];
+
+    const DEFAULT_BOTTOM = [
+      "чорні штани",
+      "жовті штани",
+      "чорна спідниця",
+      "сіра спідниця",
+      "білі штани",
+    ];
+
+    function loadWardrobe() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        if (
+          !Array.isArray(data.top) ||
+          !Array.isArray(data.bottom) ||
+          !data.top.length ||
+          !data.bottom.length
+        ) {
+          return null;
+        }
+        return {
+          top: data.top.map(String),
+          bottom: data.bottom.map(String),
+        };
+      } catch {
+        return null;
+      }
+    }
+
+    function saveWardrobe(top, bottom) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ top, bottom })
+      );
+    }
+
+    const saved = loadWardrobe();
+    let topItems = saved ? saved.top : [...DEFAULT_TOP];
+    let bottomItems = saved ? saved.bottom : [...DEFAULT_BOTTOM];
+
+    const PASTELS = [
+      "var(--pastel-a)",
+      "var(--pastel-b)",
+      "var(--pastel-c)",
+      "var(--pastel-d)",
+      "var(--pastel-e)",
+      "var(--pastel-f)",
+    ];
+
+    /**
+     * Pointer angles (from top, clockwise):
+     * left wheel → right edge (toward arrow) = 90°
+     * right wheel → left edge (toward arrow) = 270°
+     */
+    const POINTER_TOP = 90;
+    const POINTER_BOTTOM = 270;
+
+    const wheelTop = document.getElementById("wheelTop");
+    const wheelBottom = document.getElementById("wheelBottom");
+    const spinBtn = document.getElementById("spinBtn");
+    const result = document.getElementById("result");
+    const resultText = document.getElementById("resultText");
+    const arrow = document.getElementById("arrow");
+    const adminBtn = document.getElementById("adminBtn");
+    const adminModal = document.getElementById("adminModal");
+    const adminClose = document.getElementById("adminClose");
+    const adminForm = document.getElementById("adminForm");
+    const topItemsInput = document.getElementById("topItemsInput");
+    const bottomItemsInput = document.getElementById("bottomItemsInput");
+    const adminError = document.getElementById("adminError");
+
+    let rotationTop = 0;
+    let rotationBottom = 0;
+    let busy = false;
+
+    /**
+     * Assign pastel colors so no two neighboring sectors share a color
+     * (including the wrap-around between last and first).
+     */
+    function assignSectorColors(count) {
+      const colors = [];
+      for (let i = 0; i < count; i++) {
+        const prev = i > 0 ? colors[i - 1] : null;
+        const wrap = i === count - 1 && count > 1 ? colors[0] : null;
+        let idx = i % PASTELS.length;
+        let chosen = PASTELS[idx];
+        for (let attempt = 0; attempt < PASTELS.length; attempt++) {
+          const candidate = PASTELS[(idx + attempt) % PASTELS.length];
+          if (candidate !== prev && candidate !== wrap) {
+            chosen = candidate;
+            break;
+          }
+        }
+        colors.push(chosen);
+      }
+      return colors;
+    }
+
+    /**
+     * @param {"outward"|"inward"} direction
+     * outward: text from center to rim (left wheel / верх)
+     * inward: text from rim to center (right wheel / низ)
+     */
+    function buildWheel(el, items, direction = "outward") {
+      const n = items.length;
+      const step = 360 / n;
+      const sectorColors = assignSectorColors(n);
+      const stops = items
+        .map((_, i) => `${sectorColors[i]} ${i * step}deg ${(i + 1) * step}deg`)
+        .join(", ");
+
+      el.style.background = `conic-gradient(from -${step / 2}deg, ${stops})`;
+      el.innerHTML = "";
+
+      const radius = el.clientWidth * 0.30;
+      const fontScale = n > 8 ? Math.max(0.55, 1 - (n - 8) * 0.04) : 1;
+      // After radial placement, -90° reads center→rim; +90° reads rim→center
+      const textAngle = direction === "inward" ? 90 : -90;
+
+      items.forEach((text, i) => {
+        const label = document.createElement("div");
+        label.className = "label";
+        label.style.fontSize = `calc(${fontScale} * clamp(0.55rem, 1.4vw, 0.72rem))`;
+        const mid = i * step;
+        label.style.transform =
+          `translate(-50%, -50%) rotate(${mid}deg) translateY(${-radius}px) rotate(${textAngle}deg)`;
+        label.textContent = text;
+        el.appendChild(label);
+      });
+    }
+
+    function rebuildWheels({ clearResult = false } = {}) {
+      const topAngle = normalizeAngle(rotationTop);
+      const bottomAngle = normalizeAngle(rotationBottom);
+      buildWheel(wheelTop, topItems, "outward");
+      buildWheel(wheelBottom, bottomItems, "inward");
+      wheelTop.style.transition = "none";
+      wheelBottom.style.transition = "none";
+      rotationTop = topAngle;
+      rotationBottom = bottomAngle;
+      wheelTop.style.transform = `rotate(${rotationTop}deg)`;
+      wheelBottom.style.transform = `rotate(${rotationBottom}deg)`;
+      if (clearResult) {
+        result.classList.remove("visible");
+      }
+    }
+
+    function showResult(pickedTop, pickedBottom) {
+      resultText.innerHTML =
+        `<span>верх:</span> ${pickedTop}<br><span>низ:</span> ${pickedBottom}`;
+      result.classList.add("visible");
+      window.requestAnimationFrame(() => {
+        result.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    }
+
+    function normalizeAngle(deg) {
+      return ((deg % 360) + 360) % 360;
+    }
+
+    function sectorAtPointer(rotation, itemCount, pointerAngle) {
+      const step = 360 / itemCount;
+      const local = normalizeAngle(pointerAngle - rotation);
+      return Math.round(local / step) % itemCount;
+    }
+
+    function randomDurationMs() {
+      return 5000 + Math.random() * 5000;
+    }
+
+    function randomExtraTurns() {
+      return 6 + Math.floor(Math.random() * 5);
+    }
+
+    function targetRotation(current, itemCount, pointerAngle, targetIndex) {
+      const step = 360 / itemCount;
+      const desiredMod = normalizeAngle(pointerAngle - targetIndex * step);
+      const currentMod = normalizeAngle(current);
+      let delta = normalizeAngle(desiredMod - currentMod);
+      delta += randomExtraTurns() * 360;
+      return current + delta;
+    }
+
+    function spin() {
+      if (busy) return;
+      if (!topItems.length || !bottomItems.length) return;
+
+      busy = true;
+      spinBtn.disabled = true;
+      result.classList.remove("visible");
+
+      const duration = randomDurationMs();
+      const topIndex = Math.floor(Math.random() * topItems.length);
+      const bottomIndex = Math.floor(Math.random() * bottomItems.length);
+
+      rotationTop = targetRotation(rotationTop, topItems.length, POINTER_TOP, topIndex);
+      rotationBottom = targetRotation(rotationBottom, bottomItems.length, POINTER_BOTTOM, bottomIndex);
+
+      wheelTop.classList.add("spinning");
+      wheelBottom.classList.add("spinning");
+      wheelTop.style.transition = `transform ${duration}ms cubic-bezier(0.08, 0.72, 0.12, 1)`;
+      wheelBottom.style.transition = `transform ${duration}ms cubic-bezier(0.05, 0.68, 0.1, 1)`;
+      wheelTop.style.transform = `rotate(${rotationTop}deg)`;
+      wheelBottom.style.transform = `rotate(${rotationBottom}deg)`;
+
+      window.setTimeout(() => {
+        const pickedTop = topItems[sectorAtPointer(rotationTop, topItems.length, POINTER_TOP)];
+        const pickedBottom = bottomItems[sectorAtPointer(rotationBottom, bottomItems.length, POINTER_BOTTOM)];
+
+        showResult(pickedTop, pickedBottom);
+        arrow.classList.remove("pulse");
+        void arrow.offsetWidth;
+        arrow.classList.add("pulse");
+
+        wheelTop.classList.remove("spinning");
+        wheelBottom.classList.remove("spinning");
+        busy = false;
+        spinBtn.disabled = false;
+      }, duration + 40);
+    }
+
+    function parseLines(text) {
+      return text
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+    }
+
+    function openAdmin() {
+      topItemsInput.value = topItems.join("\n");
+      bottomItemsInput.value = bottomItems.join("\n");
+      adminError.textContent = "";
+      adminModal.classList.add("open");
+      topItemsInput.focus();
+    }
+
+    function closeAdmin() {
+      adminModal.classList.remove("open");
+      adminError.textContent = "";
+    }
+
+    function saveAdmin(event) {
+      event.preventDefault();
+      const nextTop = parseLines(topItemsInput.value);
+      const nextBottom = parseLines(bottomItemsInput.value);
+
+      if (!nextTop.length || !nextBottom.length) {
+        adminError.textContent = "Додайте хоча б один рядок у кожне поле.";
+        return;
+      }
+
+      topItems = nextTop;
+      bottomItems = nextBottom;
+      saveWardrobe(topItems, bottomItems);
+      rebuildWheels({ clearResult: true });
+      closeAdmin();
+    }
+
+    rebuildWheels({ clearResult: true });
+    spinBtn.addEventListener("click", spin);
+    adminBtn.addEventListener("click", openAdmin);
+    adminClose.addEventListener("click", closeAdmin);
+    adminForm.addEventListener("submit", saveAdmin);
+
+    adminModal.addEventListener("click", (event) => {
+      if (event.target === adminModal) closeAdmin();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && adminModal.classList.contains("open")) {
+        closeAdmin();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (busy) return;
+      rebuildWheels({ clearResult: false });
+    });
+  </script>
+</body>
+</html>
