@@ -439,6 +439,168 @@ h1 {
   opacity: 0.85;
 }
 
+
+    .wardrobe-block {
+      margin-bottom: 1.1rem;
+    }
+
+    .wardrobe-block > .field-label {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--ink-soft);
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .item-list {
+      width: 100%;
+      min-height: 8rem;
+      border: 1.5px solid rgba(160, 140, 160, 0.28);
+      border-radius: 0.9rem;
+      padding: 0.35rem;
+      font-family: inherit;
+      font-size: 16px;
+      line-height: 1.45;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.72);
+      outline: none;
+    }
+
+    .item-list:focus {
+      border-color: rgba(180, 150, 170, 0.7);
+      box-shadow: 0 0 0 3px rgba(196, 168, 184, 0.25);
+    }
+
+    .item-list option {
+      padding: 0.35rem 0.5rem;
+      border-radius: 0.4rem;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 0.55rem;
+      margin-top: 0.55rem;
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      color: #6d5a72;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 4px 12px rgba(90, 70, 90, 0.1);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.96);
+    }
+
+    .icon-btn svg {
+      width: 1.15rem;
+      height: 1.15rem;
+    }
+
+    .item-editor {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 0.9rem;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(160, 140, 160, 0.2);
+    }
+
+    .item-editor[hidden] {
+      display: none !important;
+    }
+
+    .item-editor-input {
+      width: 100%;
+      border: 1.5px solid rgba(160, 140, 160, 0.28);
+      border-radius: 0.75rem;
+      padding: 0.7rem 0.8rem;
+      font-family: inherit;
+      font-size: 16px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.85);
+      outline: none;
+      margin-bottom: 0.55rem;
+    }
+
+    .item-editor-input:focus {
+      border-color: rgba(180, 150, 170, 0.7);
+      box-shadow: 0 0 0 3px rgba(196, 168, 184, 0.25);
+    }
+
+    .item-editor-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .editor-btn {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 0.65rem 1rem;
+      border-radius: 999px;
+      min-height: 42px;
+    }
+
+    .editor-save {
+      color: var(--btn-text);
+      background: linear-gradient(145deg, #d4b4c4, var(--btn) 40%, #b8c9c4);
+    }
+
+    .editor-cancel {
+      color: var(--ink-soft);
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(160, 140, 160, 0.25);
+    }
+
+    .photo-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .photo-btn {
+      appearance: none;
+      border: 1.5px solid rgba(160, 140, 160, 0.35);
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--ink);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.55rem 0.95rem;
+      border-radius: 999px;
+      cursor: pointer;
+      min-height: 40px;
+    }
+
+    .photo-name {
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      word-break: break-all;
+    }
+
+    .admin-error {
+      min-height: 1.2rem;
+      margin-top: 0.35rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.85rem;
+      color: #b06070;
+    }
+
 .admin-error {
   min-height: 1.2rem;
   margin-bottom: 0.55rem;
@@ -538,20 +700,51 @@ h1 {
         <h2 id="adminTitle">Гардероб</h2>
         <button class="modal-close" id="adminClose" type="button" aria-label="Закрити">×</button>
       </div>
-      <form id="adminForm">
-        <div class="field">
-          <label for="topItemsInput">верх</label>
-          <textarea id="topItemsInput" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
-          <p class="field-hint">Кожна річ — окремий рядок</p>
+            <div id="adminForm">
+        <div class="wardrobe-block" data-kind="top">
+          <span class="field-label">верх</span>
+          <select class="item-list" size="6" aria-label="верх"></select>
+          <div class="item-actions">
+            <button type="button" class="icon-btn" data-action="add" aria-label="Додати" title="Додати"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+            <button type="button" class="icon-btn" data-action="edit" aria-label="Редагувати" title="Редагувати"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4.5L19 9.5 14.5 5 4 15.5V20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12.5 7.5l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+            <button type="button" class="icon-btn" data-action="remove" aria-label="Видалити" title="Видалити"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+          </div>
+          <div class="item-editor" hidden>
+            <input type="text" class="item-editor-input" spellcheck="false" autocomplete="off" />
+            <div class="item-editor-actions">
+              <button type="button" class="editor-btn editor-save">Зберегти</button>
+              <button type="button" class="editor-btn editor-cancel">Відміна</button>
+            </div>
+            <div class="photo-row">
+              <button type="button" class="photo-btn">Фото</button>
+              <input type="file" class="photo-input" accept="image/*" hidden />
+              <span class="photo-name"></span>
+            </div>
+          </div>
         </div>
-        <div class="field">
-          <label for="bottomItemsInput">низ</label>
-          <textarea id="bottomItemsInput" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
-          <p class="field-hint">Кожна річ — окремий рядок</p>
+        <div class="wardrobe-block" data-kind="bottom">
+          <span class="field-label">низ</span>
+          <select class="item-list" size="6" aria-label="низ"></select>
+          <div class="item-actions">
+            <button type="button" class="icon-btn" data-action="add" aria-label="Додати" title="Додати"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+            <button type="button" class="icon-btn" data-action="edit" aria-label="Редагувати" title="Редагувати"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4.5L19 9.5 14.5 5 4 15.5V20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12.5 7.5l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+            <button type="button" class="icon-btn" data-action="remove" aria-label="Видалити" title="Видалити"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+          </div>
+          <div class="item-editor" hidden>
+            <input type="text" class="item-editor-input" spellcheck="false" autocomplete="off" />
+            <div class="item-editor-actions">
+              <button type="button" class="editor-btn editor-save">Зберегти</button>
+              <button type="button" class="editor-btn editor-cancel">Відміна</button>
+            </div>
+            <div class="photo-row">
+              <button type="button" class="photo-btn">Фото</button>
+              <input type="file" class="photo-input" accept="image/*" hidden />
+              <span class="photo-name"></span>
+            </div>
+          </div>
         </div>
         <p class="admin-error" id="adminError" aria-live="polite"></p>
-        <button class="save-btn" type="submit">Зберегти</button>
-      </form>
+      </div>
     </div>
   </div>
 
@@ -631,9 +824,7 @@ const arrow = document.getElementById("arrow");
 const adminBtn = document.getElementById("adminBtn");
 const adminModal = document.getElementById("adminModal");
 const adminClose = document.getElementById("adminClose");
-const adminForm = document.getElementById("adminForm");
-const topItemsInput = document.getElementById("topItemsInput");
-const bottomItemsInput = document.getElementById("bottomItemsInput");
+const adminForm = document.getElementById("adminForm"); // wardrobe panel
 const adminError = document.getElementById("adminError");
 
 let topItems = [];
@@ -806,23 +997,189 @@ function spin() {
   }, duration + 40);
 }
 
+function sortAlpha(items) {
+  return [...items].sort((a, b) => a.localeCompare(b, "uk", { sensitivity: "base" }));
+}
+
+function getItemsRef(kind) {
+  return kind === "top" ? topItems : bottomItems;
+}
+
+function setItemsRef(kind, items) {
+  if (kind === "top") topItems = items;
+  else bottomItems = items;
+}
+
+function persistWardrobe() {
+  topItems = sortAlpha(topItems.map(capitalizeFirstWord));
+  bottomItems = sortAlpha(bottomItems.map(capitalizeFirstWord));
+  saveWardrobe(topItems, bottomItems);
+  rebuildWheels({ clearResult: true });
+  refreshAdminLists();
+}
+
+function refreshAdminLists() {
+  document.querySelectorAll(".wardrobe-block").forEach((block) => {
+    const kind = block.dataset.kind;
+    const list = block.querySelector(".item-list");
+    const selected = list.value;
+    const items = getItemsRef(kind);
+    list.innerHTML = "";
+    items.forEach((text) => {
+      const opt = document.createElement("option");
+      opt.value = text;
+      opt.textContent = text;
+      list.appendChild(opt);
+    });
+    if (selected && items.includes(selected)) list.value = selected;
+  });
+}
+
+function setAdminMessage(text) {
+  adminError.textContent = text || "";
+}
+
+function closeEditor(block) {
+  const editor = block.querySelector(".item-editor");
+  editor.hidden = true;
+  editor.dataset.mode = "";
+  editor.dataset.original = "";
+  block.querySelector(".item-editor-input").value = "";
+  block.querySelector(".photo-input").value = "";
+  block.querySelector(".photo-name").textContent = "";
+}
+
+function openEditor(block, mode, value) {
+  document.querySelectorAll(".wardrobe-block").forEach(closeEditor);
+  const editor = block.querySelector(".item-editor");
+  editor.hidden = false;
+  editor.dataset.mode = mode;
+  editor.dataset.original = value || "";
+  const input = block.querySelector(".item-editor-input");
+  input.value = value || "";
+  block.querySelector(".photo-name").textContent = "";
+  block.querySelector(".photo-input").value = "";
+  setAdminMessage("");
+  input.focus();
+}
+
+function handleBlockAction(block, action) {
+  const kind = block.dataset.kind;
+  const list = block.querySelector(".item-list");
+  const selected = list.value;
+
+  if (action === "add") {
+    openEditor(block, "add", "");
+    return;
+  }
+
+  if (action === "edit") {
+    if (!selected) {
+      setAdminMessage("Оберіть позицію");
+      return;
+    }
+    openEditor(block, "edit", selected);
+    return;
+  }
+
+  if (action === "remove") {
+    if (!selected) {
+      setAdminMessage("Оберіть позицію");
+      return;
+    }
+    if (!window.confirm(`Ви впевнені, що хочете видалити «${selected}»?`)) return;
+    const next = getItemsRef(kind).filter((item) => item !== selected);
+    if (!next.length) {
+      setAdminMessage("Має залишитись хоча б одна позиція.");
+      return;
+    }
+    setItemsRef(kind, next);
+    persistWardrobe();
+    setAdminMessage("");
+    closeEditor(block);
+  }
+}
+
+function saveEditor(block) {
+  const kind = block.dataset.kind;
+  const editor = block.querySelector(".item-editor");
+  const mode = editor.dataset.mode;
+  const original = editor.dataset.original || "";
+  const value = capitalizeFirstWord(block.querySelector(".item-editor-input").value);
+
+  if (!value) {
+    setAdminMessage("Введіть назву.");
+    return;
+  }
+
+  let items = [...getItemsRef(kind)];
+  if (mode === "add") {
+    if (items.some((item) => item.localeCompare(value, "uk", { sensitivity: "base" }) === 0)) {
+      setAdminMessage("Така позиція вже є.");
+      return;
+    }
+    items.push(value);
+  } else if (mode === "edit") {
+    const idx = items.indexOf(original);
+    if (idx < 0) {
+      setAdminMessage("Позицію не знайдено.");
+      return;
+    }
+    if (
+      items.some(
+        (item, i) => i !== idx && item.localeCompare(value, "uk", { sensitivity: "base" }) === 0
+      )
+    ) {
+      setAdminMessage("Така позиція вже є.");
+      return;
+    }
+    items[idx] = value;
+  } else {
+    return;
+  }
+
+  setItemsRef(kind, items);
+  persistWardrobe();
+  closeEditor(block);
+  setAdminMessage("");
+  const list = block.querySelector(".item-list");
+  list.value = value;
+}
+
+function initAdminBlocks() {
+  document.querySelectorAll(".wardrobe-block").forEach((block) => {
+    block.querySelectorAll(".icon-btn").forEach((btn) => {
+      btn.addEventListener("click", () => handleBlockAction(block, btn.dataset.action));
+    });
+    block.querySelector(".editor-save").addEventListener("click", () => saveEditor(block));
+    block.querySelector(".editor-cancel").addEventListener("click", () => {
+      closeEditor(block);
+      setAdminMessage("");
+    });
+    const photoBtn = block.querySelector(".photo-btn");
+    const photoInput = block.querySelector(".photo-input");
+    const photoName = block.querySelector(".photo-name");
+    photoBtn.addEventListener("click", () => photoInput.click());
+    photoInput.addEventListener("change", () => {
+      const file = photoInput.files && photoInput.files[0];
+      photoName.textContent = file ? file.name : "";
+    });
+    block.querySelector(".item-list").addEventListener("change", () => setAdminMessage(""));
+  });
+}
+
 function capitalizeFirstWord(text) {
   const t = String(text).trim();
   if (!t) return t;
   return t.charAt(0).toLocaleUpperCase("uk") + t.slice(1);
 }
 
-function parseLines(text) {
-  return text
-    .split(/\r?\n/)
-    .map((line) => capitalizeFirstWord(line))
-    .filter(Boolean);
-}
+
 
 function openAdmin() {
-  topItemsInput.value = topItems.join("\n");
-  bottomItemsInput.value = bottomItems.join("\n");
-  adminError.textContent = "";
+  refreshAdminLists();
+  setAdminMessage("");
+  document.querySelectorAll(".wardrobe-block").forEach(closeEditor);
   adminModal.classList.add("open");
   document.body.classList.add("modal-open");
 }
@@ -831,24 +1188,10 @@ function closeAdmin() {
   adminModal.classList.remove("open");
   document.body.classList.remove("modal-open");
   adminError.textContent = "";
+  document.querySelectorAll(".wardrobe-block").forEach(closeEditor);
 }
 
-function saveAdmin(event) {
-  event.preventDefault();
-  const nextTop = parseLines(topItemsInput.value);
-  const nextBottom = parseLines(bottomItemsInput.value);
 
-  if (!nextTop.length || !nextBottom.length) {
-    adminError.textContent = "Додайте хоча б один рядок у кожне поле.";
-    return;
-  }
-
-  topItems = nextTop;
-  bottomItems = nextBottom;
-  saveWardrobe(topItems, bottomItems);
-  rebuildWheels({ clearResult: true });
-  closeAdmin();
-}
 
 function scheduleRebuild() {
   // Safari fires resize/visualViewport while scrolling (address bar).
@@ -860,15 +1203,15 @@ function scheduleRebuild() {
 
 function init() {
   const saved = loadWardrobe();
-  topItems = saved ? saved.top : [...DEFAULT_TOP];
-  bottomItems = saved ? saved.bottom : [...DEFAULT_BOTTOM];
+  topItems = sortAlpha(saved ? saved.top : [...DEFAULT_TOP]);
+  bottomItems = sortAlpha(saved ? saved.bottom : [...DEFAULT_BOTTOM]);
 
   rebuildWheels({ clearResult: true });
 
   spinBtn.addEventListener("click", spin);
   adminBtn.addEventListener("click", openAdmin);
   adminClose.addEventListener("click", closeAdmin);
-  adminForm.addEventListener("submit", saveAdmin);
+  initAdminBlocks();
 
   adminModal.addEventListener("click", (event) => {
     if (event.target === adminModal) closeAdmin();
