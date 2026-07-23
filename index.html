@@ -591,18 +591,18 @@ h1 {
 const STORAGE_KEY = "wardrobe-wheels-v1";
 
 const DEFAULT_TOP = [
-  "біла блузка",
-  "синя футболка",
-  "блакитна блуза",
-  "біла блузка з квітами",
+  "Біла блузка",
+  "Синя футболка",
+  "Блакитна блуза",
+  "Біла блузка з квітами",
 ];
 
 const DEFAULT_BOTTOM = [
-  "чорні штани",
-  "жовті штани",
-  "чорна спідниця",
-  "сіра спідниця",
-  "білі штани",
+  "Чорні штани",
+  "Жовті штани",
+  "Чорна спідниця",
+  "Сіра спідниця",
+  "Білі штани",
 ];
 
 const PASTELS = [
@@ -657,8 +657,8 @@ function loadWardrobe() {
       return null;
     }
     return {
-      top: data.top.map(String),
-      bottom: data.bottom.map(String),
+      top: data.top.map((item) => capitalizeFirstWord(String(item))),
+      bottom: data.bottom.map((item) => capitalizeFirstWord(String(item))),
     };
   } catch {
     return null;
@@ -806,10 +806,16 @@ function spin() {
   }, duration + 40);
 }
 
+function capitalizeFirstWord(text) {
+  const t = String(text).trim();
+  if (!t) return t;
+  return t.charAt(0).toLocaleUpperCase("uk") + t.slice(1);
+}
+
 function parseLines(text) {
   return text
     .split(/\r?\n/)
-    .map((line) => line.trim())
+    .map((line) => capitalizeFirstWord(line))
     .filter(Boolean);
 }
 
