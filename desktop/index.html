@@ -2,6 +2,23 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.has("desktop")) return;
+      if (params.has("mobile")) {
+        location.replace(new URL("../", location.href).href + "?mobile");
+        return;
+      }
+      var ua = navigator.userAgent || "";
+      var isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) ||
+        (navigator.maxTouchPoints > 1 && /Mac/.test(ua));
+      if (isMobile) {
+        location.replace(new URL("../", location.href).href);
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Образ дня — десктоп</title>
   <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
