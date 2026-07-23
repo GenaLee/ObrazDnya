@@ -294,10 +294,66 @@ h1 {
   color: #6d5a72;
 }
 
-.admin-btn {
+
+.corner-toolbar {
   position: fixed;
   top: calc(0.75rem + var(--safe-top));
   left: calc(0.75rem + var(--safe-left));
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.item-list {
+  display: block;
+  width: 100%;
+  height: calc(5 * 2.35rem + 0.7rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1.5px solid rgba(160, 140, 160, 0.28);
+  border-radius: 0.9rem;
+  padding: 0.35rem;
+  background: rgba(255, 255, 255, 0.72);
+  outline: none;
+}
+
+.item-list:focus {
+  border-color: rgba(180, 150, 170, 0.7);
+  box-shadow: 0 0 0 3px rgba(196, 168, 184, 0.25);
+}
+
+.item-option {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.25;
+  color: var(--ink);
+  padding: 0.55rem 0.65rem;
+  min-height: 2.35rem;
+  border-radius: 0.55rem;
+  cursor: pointer;
+}
+
+.item-option.selected {
+  background: rgba(196, 168, 184, 0.35);
+  font-weight: 700;
+}
+
+.photo-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.2);
+}
+
+.admin-btn {
+  position: relative;
+  top: auto;
+  left: auto;
   z-index: 30;
   width: 44px;
   height: 44px;
@@ -679,17 +735,22 @@ h1 {
   </style>
 </head>
 <body>
-  <button class="admin-btn" id="adminBtn" type="button" aria-label="Гардероб" title="Гардероб">
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" stroke="currentColor" stroke-width="1.8"/>
-      <path
-        d="M19.4 13a7.7 7.7 0 0 0 .05-2l1.7-1.3-1.6-2.8-2 .7a7.6 7.6 0 0 0-1.7-1l-.3-2.1H10.4l-.3 2.1a7.6 7.6 0 0 0-1.7 1l-2-.7-1.6 2.8L6.5 11a7.7 7.7 0 0 0 0 2l-1.7 1.3 1.6 2.8 2-.7a7.6 7.6 0 0 0 1.7 1l.3 2.1h3.2l.3-2.1a7.6 7.6 0 0 0 1.7-1l2 .7 1.6-2.8L19.4 13Z"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linejoin="round"
-      />
+  <div class="corner-toolbar">
+    <button class="admin-btn" id="adminBtn" type="button" aria-label="Гардероб" title="Гардероб">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 4.5a1.6 1.6 0 1 1 0 3.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M12 7.7v1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M4.2 17.2c2.2-3.2 4.8-4.8 7.8-4.8s5.6 1.6 7.8 4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M3.5 17.8h17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
-  </button>
+    </button>
+    <button class="admin-btn refresh-btn" id="refreshBtn" type="button" aria-label="Оновити" title="Оновити">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M19.5 4.8V9h-4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+  </div>
 
   <h1>Образ дня</h1>
   <button class="spin-btn" id="spinBtn" type="button">Що мені вдягнути?</button>
@@ -703,7 +764,7 @@ h1 {
             <div id="adminForm">
         <div class="wardrobe-block" data-kind="top">
           <span class="field-label">верх</span>
-          <select class="item-list" size="6" aria-label="верх"></select>
+          <div class="item-list" role="listbox" tabindex="0" aria-label="верх" data-selected=""></div>
           <div class="item-actions">
             <button type="button" class="icon-btn" data-action="add" aria-label="Додати" title="Додати"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
             <button type="button" class="icon-btn" data-action="edit" aria-label="Редагувати" title="Редагувати"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4.5L19 9.5 14.5 5 4 15.5V20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12.5 7.5l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
@@ -716,7 +777,7 @@ h1 {
               <button type="button" class="editor-btn editor-cancel">Відміна</button>
             </div>
             <div class="photo-row">
-              <button type="button" class="photo-btn">Фото</button>
+              <button type="button" class="photo-btn" disabled aria-disabled="true">Фото</button>
               <input type="file" class="photo-input" accept="image/*" hidden />
               <span class="photo-name"></span>
             </div>
@@ -724,7 +785,7 @@ h1 {
         </div>
         <div class="wardrobe-block" data-kind="bottom">
           <span class="field-label">низ</span>
-          <select class="item-list" size="6" aria-label="низ"></select>
+          <div class="item-list" role="listbox" tabindex="0" aria-label="низ" data-selected=""></div>
           <div class="item-actions">
             <button type="button" class="icon-btn" data-action="add" aria-label="Додати" title="Додати"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
             <button type="button" class="icon-btn" data-action="edit" aria-label="Редагувати" title="Редагувати"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4.5L19 9.5 14.5 5 4 15.5V20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12.5 7.5l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
@@ -737,7 +798,7 @@ h1 {
               <button type="button" class="editor-btn editor-cancel">Відміна</button>
             </div>
             <div class="photo-row">
-              <button type="button" class="photo-btn">Фото</button>
+              <button type="button" class="photo-btn" disabled aria-disabled="true">Фото</button>
               <input type="file" class="photo-input" accept="image/*" hidden />
               <span class="photo-name"></span>
             </div>
@@ -900,7 +961,7 @@ function buildWheel(el, items, direction = "outward") {
     label.style.fontSize = `calc(${fontScale} * clamp(0.62rem, 3.2vw, 0.78rem))`;
     const mid = i * step;
     label.style.transform =
-      `translate(-50%, -50%) rotate(${mid}deg) translateY(${-radius}px) rotate(${textAngle}deg)`;
+      `translate(-50%, -50%) rotate(${mid}deg) translateY(${-radius}px) rotate(${-mid + textAngle}deg)`;
     label.textContent = text;
     el.appendChild(label);
   });
@@ -1018,20 +1079,41 @@ function persistWardrobe() {
   refreshAdminLists();
 }
 
+function getListSelected(list) {
+  return list.dataset.selected || "";
+}
+
+function setListSelected(list, value) {
+  list.dataset.selected = value || "";
+  list.querySelectorAll(".item-option").forEach((btn) => {
+    const on = btn.dataset.value === value;
+    btn.classList.toggle("selected", on);
+    btn.setAttribute("aria-selected", on ? "true" : "false");
+  });
+}
+
 function refreshAdminLists() {
   document.querySelectorAll(".wardrobe-block").forEach((block) => {
     const kind = block.dataset.kind;
     const list = block.querySelector(".item-list");
-    const selected = list.value;
+    const selected = getListSelected(list);
     const items = getItemsRef(kind);
     list.innerHTML = "";
     items.forEach((text) => {
-      const opt = document.createElement("option");
-      opt.value = text;
-      opt.textContent = text;
-      list.appendChild(opt);
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "item-option";
+      btn.dataset.value = text;
+      btn.textContent = text;
+      btn.setAttribute("role", "option");
+      btn.addEventListener("click", () => {
+        setListSelected(list, text);
+        setAdminMessage("");
+      });
+      list.appendChild(btn);
     });
-    if (selected && items.includes(selected)) list.value = selected;
+    if (selected && items.includes(selected)) setListSelected(list, selected);
+    else setListSelected(list, "");
   });
 }
 
@@ -1066,7 +1148,7 @@ function openEditor(block, mode, value) {
 function handleBlockAction(block, action) {
   const kind = block.dataset.kind;
   const list = block.querySelector(".item-list");
-  const selected = list.value;
+  const selected = getListSelected(list);
 
   if (action === "add") {
     openEditor(block, "add", "");
@@ -1143,7 +1225,7 @@ function saveEditor(block) {
   closeEditor(block);
   setAdminMessage("");
   const list = block.querySelector(".item-list");
-  list.value = value;
+  setListSelected(list, value);
 }
 
 function initAdminBlocks() {
@@ -1159,13 +1241,12 @@ function initAdminBlocks() {
     const photoBtn = block.querySelector(".photo-btn");
     const photoInput = block.querySelector(".photo-input");
     const photoName = block.querySelector(".photo-name");
-    photoBtn.addEventListener("click", () => photoInput.click());
+    if (!photoBtn.disabled) photoBtn.addEventListener("click", () => photoInput.click());
     photoInput.addEventListener("change", () => {
       const file = photoInput.files && photoInput.files[0];
       photoName.textContent = file ? file.name : "";
     });
-    block.querySelector(".item-list").addEventListener("change", () => setAdminMessage(""));
-  });
+      });
 }
 
 function capitalizeFirstWord(text) {
@@ -1210,6 +1291,7 @@ function init() {
 
   spinBtn.addEventListener("click", spin);
   adminBtn.addEventListener("click", openAdmin);
+  document.getElementById("refreshBtn").addEventListener("click", () => location.reload());
   adminClose.addEventListener("click", closeAdmin);
   initAdminBlocks();
 
