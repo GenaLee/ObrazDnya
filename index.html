@@ -960,7 +960,7 @@ function buildWheel(el, items, direction = "outward") {
     label.style.fontSize = `calc(${fontScale} * clamp(0.62rem, 3.2vw, 0.78rem))`;
     const mid = i * step;
     label.style.transform =
-      `translate(-50%, -50%) rotate(${mid}deg) translateY(${-radius}px) rotate(${-mid + textAngle}deg)`;
+      `translate(-50%, -50%) rotate(${mid}deg) translateY(${-radius}px) rotate(${textAngle}deg)`;
     label.textContent = text;
     el.appendChild(label);
   });
