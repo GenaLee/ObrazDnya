@@ -511,8 +511,12 @@ h1 {
     }
 
     .item-list {
+      display: block;
       width: 100%;
-      min-height: 8rem;
+      height: calc(5 * 2.35rem + 0.7rem);
+      min-height: calc(5 * 2.35rem + 0.7rem);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       border: 1.5px solid rgba(160, 140, 160, 0.28);
       border-radius: 0.9rem;
       padding: 0.35rem;
@@ -527,11 +531,6 @@ h1 {
     .item-list:focus {
       border-color: rgba(180, 150, 170, 0.7);
       box-shadow: 0 0 0 3px rgba(196, 168, 184, 0.25);
-    }
-
-    .item-list option {
-      padding: 0.35rem 0.5rem;
-      border-radius: 0.4rem;
     }
 
     .item-actions {
